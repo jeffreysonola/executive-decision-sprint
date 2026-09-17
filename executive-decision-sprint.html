@@ -191,6 +191,37 @@
     padding:18px 24px;
     box-shadow:0 8px 24px rgba(0,0,0,0.35);
   }
+  .prompt-card.copyable{ position:relative; }
+  .prompt-card.copyable .label{ padding-right:126px; }
+  .copy-button{
+    position:absolute;
+    top:14px;
+    right:16px;
+    min-width:112px;
+    min-height:34px;
+    padding:7px 12px;
+    border:1px solid var(--border-strong);
+    border-radius:8px;
+    background:rgba(255,47,126,0.1);
+    color:var(--pink-soft);
+    font:600 11px "Montserrat", sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .copy-button:hover,
+  .copy-button:focus-visible{
+    background:var(--pink-deep);
+    border-color:var(--pink-deep);
+    color:#fff;
+    outline:none;
+  }
+  .copy-button.copied{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:var(--bg);
+  }
   .prompt-card .label{
     font-size:11.5px;
     text-transform:uppercase;
@@ -236,36 +267,52 @@
   .bullet-list li::marker{ color:var(--pink); }
   .agenda-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
-    gap:16px;
-    max-width:980px;
+    grid-template-columns:repeat(6, 1fr);
+    gap:20px;
+    max-width:1180px;
     width:100%;
+    margin:auto;
   }
   .agenda-item{
+    grid-column:span 2;
     background:linear-gradient(180deg, var(--panel), var(--panel-soft));
     border:1px solid var(--border);
-    border-radius:14px;
-    padding:20px;
+    border-radius:16px;
+    padding:28px;
     text-align:left;
+    min-height:180px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    box-shadow:0 14px 34px rgba(0,0,0,0.34);
+    transition:transform .25s ease, border-color .25s ease;
   }
+  .agenda-item:nth-child(4){ grid-column:2 / span 2; }
+  .agenda-item:hover{ transform:translateY(-4px); border-color:var(--border-strong); }
   .agenda-item .num{
     font-family:"Playfair Display", serif;
-    font-size:26px;
+    font-size:34px;
     color:var(--pink);
     font-weight:700;
   }
   .agenda-item .name{
-    font-size:15px;
+    font-size:19px;
     font-weight:600;
-    margin-top:6px;
+    margin-top:10px;
     color:var(--text);
   }
   .agenda-item .prod{
-    font-size:12px;
+    font-size:12.5px;
     color:var(--gold-soft);
     text-transform:uppercase;
     letter-spacing:.08em;
-    margin-top:4px;
+    margin-top:8px;
+    line-height:1.45;
+  }
+  @media (max-width:800px){
+    .agenda-grid{ grid-template-columns:1fr; max-width:560px; }
+    .agenda-item,
+    .agenda-item:nth-child(4){ grid-column:1; min-height:140px; }
   }
 
   /* Nav controls */
@@ -357,7 +404,7 @@
   </section>
 
   <!-- Slide 3: Demos agenda -->
-  <section class="slide content-slide" data-title="Demos Agenda">
+  <section class="slide content-slide agenda-slide" data-title="Demos Agenda">
     <div class="content-header">
       <div class="kicker" style="justify-content:center;">What's Next</div>
       <h2>Five Demos, One CFO's Day</h2>
@@ -541,6 +588,9 @@
 
 <script>
   const slides = Array.from(document.querySelectorAll('.slide'));
+  const agendaSlide = slides.find((slide) => slide.classList.contains('agenda-slide'));
+  slides.splice(slides.indexOf(agendaSlide), 1);
+  slides.unshift(agendaSlide);
   const total = slides.length;
   let current = 0;
 
@@ -572,6 +622,41 @@
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'PageDown') goTo(current + 1);
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') goTo(current - 1);
+  });
+
+  document.querySelectorAll('.prompt-card:has(.prompt-text)').forEach((card) => {
+    card.classList.add('copyable');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'copy-button';
+    button.textContent = 'Copy prompt';
+    button.setAttribute('aria-label', 'Copy this prompt');
+    button.addEventListener('click', async () => {
+      const prompt = card.querySelector('.prompt-text').textContent.trim();
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(prompt);
+        } else {
+          const textArea = document.createElement('textarea');
+          textArea.value = prompt;
+          textArea.style.position = 'fixed';
+          textArea.style.opacity = '0';
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          textArea.remove();
+        }
+        button.textContent = 'Copied';
+        button.classList.add('copied');
+        setTimeout(() => {
+          button.textContent = 'Copy prompt';
+          button.classList.remove('copied');
+        }, 1600);
+      } catch {
+        button.textContent = 'Try again';
+      }
+    });
+    card.appendChild(button);
   });
 
   render();
