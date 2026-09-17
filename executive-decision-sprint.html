@@ -272,6 +272,15 @@
   @media (max-width:720px){
     .personalization-prompt ul{ grid-template-columns:1fr; }
   }
+  .skill-card{ margin-bottom:72px; }
+  .skill-prompt{
+    margin:0;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    color:var(--blush);
+    font:14px/1.55 Consolas, "Courier New", monospace;
+    font-style:normal !important;
+  }
   .note-card{
     background:transparent;
     border:1px dashed var(--border-strong);
@@ -541,13 +550,54 @@
         <div class="label"><span class="badge">Prompt — Build the Executive Report</span></div>
         <p class="prompt-text">"Create a new worksheet named 'CFO Executive Summary.' Do not change the source worksheets. Build an executive report containing: (1) a KPI table for net sales, gross profit, gross margin rate, SG&amp;A, SG&amp;A rate, adjusted operating income, operating margin, effective tax rate, adjusted net income, diluted EPS, and weighted average diluted shares; (2) Q1 2026 actual, Q1 2025 actual, dollar change, percentage change, and basis-point change where applicable; (3) a waterfall or bridge showing the largest contributors to the year-over-year operating-income change; (4) a reported-to-adjusted EPS reconciliation; (5) five executive observations separating operational drivers, accounting adjustments, and items requiring management attention; (6) source worksheet and cell references for every KPI. Use formulas linked to the source data rather than typing static values."</p>
       </div>
-      <div class="prompt-card">
-        <div class="label"><span class="badge">Prompt — Enhance With Supporting Files</span></div>
-        <p class="prompt-text">"Enhance the 'CFO Executive Summary' using the attached investor deck, financial update, cash-flow schedule, and tax briefing. Add sections for liquidity, guidance, tax-rate drivers, and management narrative. Reconcile figures across sources before using them. If sources disagree, identify the discrepancy instead of choosing a number silently. Clearly label actuals, adjusted results, forecasts, and management commentary."</p>
-      </div>
-      <div class="prompt-card">
+      <div class="prompt-card skill-card">
         <div class="label"><span class="badge">Skill — cfo-earnings-review</span></div>
-        <p>A reusable Copilot Skill that runs this entire workflow on command: identifies the income statement and adjustment sheets, builds the KPI table, calculates dollar/percent/basis-point changes, reconciles reported to adjusted, and produces the "CFO Executive Summary" worksheet — with validation rules so blanks are never treated as zero, GAAP and adjusted figures are never mixed, and every conclusion carries a source citation or a clearly marked "NOT FOUND."</p>
+        <pre class="prompt-text skill-prompt">Demo 3: making a skill
+---
+name: cfo-earnings-review
+description: Use when I ask Copilot in Excel to review quarterly earnings, compare actual results with prior periods, reconcile reported and adjusted measures, or create a CFO executive summary from a financial workbook and supporting earnings files.
+---
+
+# CFO earnings review
+
+Analyze the active workbook as a finance professional preparing a CFO briefing.
+
+## Workflow
+
+1. Identify the consolidated income statement and relevant adjustment sheets.
+2. Determine the period, comparison period, units, and whether each measure is GAAP, reported, adjusted, actual, forecast, or guidance.
+3. Create a KPI table containing:
+   - Net sales
+   - Gross profit and gross margin rate
+   - SG&amp;A and SG&amp;A rate
+   - Operating income and operating margin
+   - Non-operating expense
+   - Effective tax rate
+   - Net income
+   - Diluted EPS
+   - Weighted average diluted shares
+4. Calculate dollar, percentage, and basis-point changes as appropriate.
+5. Reconcile reported results to adjusted results.
+6. If supporting files are provided, reconcile workbook values against those files.
+7. Create a worksheet named "CFO Executive Summary" containing:
+   - KPI scorecard
+   - Operating-income bridge
+   - EPS reconciliation
+   - Five executive observations
+   - Questions requiring management follow-up
+8. Link outputs to source cells with formulas whenever possible.
+9. Include source worksheet and cell references for every conclusion.
+
+## Validation rules
+
+- Do not treat blanks as zero.
+- Do not mix GAAP and adjusted figures.
+- Do not mix actuals, forecasts, and guidance.
+- Use basis points for rate changes.
+- Preserve signs for expenses, losses, and cash outflows.
+- If two sources disagree, show both values and identify the discrepancy.
+- Write "NOT FOUND" when a requested figure cannot be sourced.
+- Do not invent explanations that are not supported by the workbook or attached files.</pre>
       </div>
     </div>
   </section>
