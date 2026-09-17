@@ -665,6 +665,10 @@ Analyze the active workbook as a finance professional preparing a CFO briefing.
   const agendaSlide = slides.find((slide) => slide.classList.contains('agenda-slide'));
   slides.splice(slides.indexOf(agendaSlide), 1);
   slides.unshift(agendaSlide);
+  const researcherSlide = slides.find((slide) => slide.dataset.title === 'Researcher');
+  const earningsBinderIndex = slides.findIndex((slide) => slide.dataset.title === 'Demo 3');
+  slides.splice(slides.indexOf(researcherSlide), 1);
+  slides.splice(earningsBinderIndex + 1, 0, researcherSlide);
   const total = slides.length;
   let current = 0;
 
