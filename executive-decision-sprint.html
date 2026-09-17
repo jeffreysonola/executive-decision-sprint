@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Executive Decision Sprint — Microsoft 365 Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0709;
+    --bg-alt:#160c10;
+    --panel:#1d1216;
+    --panel-soft:#241318;
+    --border:rgba(255,182,201,0.18);
+    --border-strong:rgba(255,182,201,0.35);
+    --pink:#ff2f7e;
+    --pink-deep:#c8155a;
+    --pink-soft:#ffb9cf;
+    --blush:#f6d7e2;
+    --gold:#d4af5a;
+    --gold-soft:#efd9a2;
+    --text:#f6ecef;
+    --text-muted:#cdb3bd;
+    --text-soft:#a98a95;
+    --shadow: 0 20px 60px rgba(0,0,0,0.55);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Montserrat", "Segoe UI", sans-serif;
+    overflow:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(255,47,126,0.10), transparent 55%),
+      radial-gradient(ellipse at 85% 90%, rgba(212,175,90,0.08), transparent 55%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .deck{
+    position:relative;
+    height:100vh;
+    width:100vw;
+    z-index:1;
+  }
+  .slide{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:64px 8vw;
+    opacity:0;
+    visibility:hidden;
+    transform:translateX(40px);
+    transition:opacity .5s ease, transform .5s ease, visibility .5s;
+  }
+  .slide.active{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(0);
+  }
+  .kicker{
+    text-transform:uppercase;
+    letter-spacing:.35em;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--gold-soft);
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .kicker::before{
+    content:"";
+    display:inline-block;
+    width:32px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold-soft));
+  }
+  .title-card .kicker::before{ display:none; }
+  .title-card .kicker{ justify-content:center; }
+  h1.hero{
+    font-family:"Playfair Display", serif;
+    font-weight:800;
+    font-size:clamp(38px, 6vw, 78px);
+    line-height:1.05;
+    margin:0 0 20px;
+    text-align:center;
+    background:linear-gradient(120deg, var(--blush) 0%, #ffffff 35%, var(--pink-soft) 65%, var(--gold-soft) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    max-width:16ch;
+  }
+  .rule{
+    width:120px; height:3px;
+    margin:6px auto 26px;
+    background:linear-gradient(90deg, var(--pink-deep), var(--gold));
+    border-radius:4px;
+  }
+  .subtitle{
+    font-size:clamp(15px, 1.3vw, 20px);
+    color:var(--text-muted);
+    text-align:center;
+    max-width:52ch;
+    font-weight:400;
+    line-height:1.6;
+  }
+  .product-pill{
+    margin-top:34px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 22px;
+    border-radius:999px;
+    border:1px solid var(--border-strong);
+    background:linear-gradient(180deg, rgba(255,47,126,0.14), rgba(212,175,90,0.06));
+    font-size:13px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--gold-soft);
+    box-shadow: var(--shadow);
+  }
+  .product-pill .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 10px 2px rgba(255,47,126,0.6);
+  }
+
+  /* Title-card slide (section divider) */
+  .title-card{
+    text-align:center;
+  }
+  .title-card .index{
+    position:absolute;
+    top:44px;
+    font-family:"Playfair Display", serif;
+    font-size:110px;
+    font-weight:700;
+    color:rgba(255,182,201,0.06);
+    letter-spacing:-4px;
+    user-select:none;
+  }
+
+  /* Content slide layout */
+  .content-slide{
+    justify-content:flex-start;
+    align-items:stretch;
+    padding-top:56px;
+    padding-bottom:40px;
+    overflow-y:auto;
+  }
+  .content-header{
+    text-align:center;
+    margin-bottom:28px;
+    flex-shrink:0;
+  }
+  .content-header h2{
+    font-family:"Playfair Display", serif;
+    font-size:clamp(28px, 3.2vw, 44px);
+    font-weight:700;
+    margin:6px 0 8px;
+    background:linear-gradient(120deg, var(--blush), var(--pink-soft));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .content-header .tag{
+    font-size:13px;
+    color:var(--text-soft);
+    letter-spacing:.05em;
+  }
+  .content-body{
+    width:100%;
+    max-width:980px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .prompt-card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-soft));
+    border:1px solid var(--border);
+    border-left:3px solid var(--pink-deep);
+    border-radius:14px;
+    padding:18px 24px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+  }
+  .prompt-card .label{
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    color:var(--gold-soft);
+    font-weight:700;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .prompt-card .label .badge{
+    background:rgba(255,47,126,0.15);
+    color:var(--pink-soft);
+    border:1px solid var(--border-strong);
+    border-radius:6px;
+    padding:1px 8px;
+    font-size:10.5px;
+    letter-spacing:.08em;
+  }
+  .prompt-card p{
+    margin:0;
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--text);
+  }
+  .prompt-card .prompt-text{
+    font-style:italic;
+    color:var(--blush);
+  }
+  .note-card{
+    background:transparent;
+    border:1px dashed var(--border-strong);
+    border-left:3px solid var(--gold);
+  }
+  .note-card .label{ color:var(--pink-soft); }
+  .bullet-list{
+    margin:0; padding-left:20px;
+    display:flex; flex-direction:column; gap:8px;
+    color:var(--text-muted);
+    font-size:15px;
+  }
+  .bullet-list li::marker{ color:var(--pink); }
+  .agenda-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:16px;
+    max-width:980px;
+    width:100%;
+  }
+  .agenda-item{
+    background:linear-gradient(180deg, var(--panel), var(--panel-soft));
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px;
+    text-align:left;
+  }
+  .agenda-item .num{
+    font-family:"Playfair Display", serif;
+    font-size:26px;
+    color:var(--pink);
+    font-weight:700;
+  }
+  .agenda-item .name{
+    font-size:15px;
+    font-weight:600;
+    margin-top:6px;
+    color:var(--text);
+  }
+  .agenda-item .prod{
+    font-size:12px;
+    color:var(--gold-soft);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-top:4px;
+  }
+
+  /* Nav controls */
+  .nav{
+    position:fixed;
+    bottom:26px; left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    align-items:center;
+    gap:18px;
+    z-index:5;
+    background:rgba(12,7,9,0.6);
+    backdrop-filter:blur(8px);
+    padding:10px 18px;
+    border-radius:999px;
+    border:1px solid var(--border);
+  }
+  .nav button{
+    background:transparent;
+    border:1px solid var(--border-strong);
+    color:var(--blush);
+    width:36px; height:36px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .nav button:hover{ background:var(--pink-deep); color:#fff; border-color:var(--pink-deep); }
+  .nav .counter{
+    font-size:12.5px;
+    letter-spacing:.1em;
+    color:var(--text-soft);
+    min-width:64px;
+    text-align:center;
+  }
+  .dots{
+    position:fixed;
+    right:22px; top:50%;
+    transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:9px;
+    z-index:5;
+  }
+  .dots button{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:rgba(255,182,201,0.25);
+    border:none;
+    cursor:pointer;
+    padding:0;
+  }
+  .dots button.active{
+    background:var(--pink);
+    box-shadow:0 0 8px 1px rgba(255,47,126,0.7);
+  }
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:4px; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- Slide 0: Cover -->
+  <section class="slide title-card active" data-title="Cover">
+    <div class="kicker">Executive Decision Sprint</div>
+    <h1 class="hero">Working at the Speed of a Decision</h1>
+    <div class="rule"></div>
+    <p class="subtitle">A hands-on session exploring how Microsoft 365 Copilot and WorkIQ turn everyday documents, meetings, and data into faster executive decisions.</p>
+    <div class="product-pill"><span class="dot"></span> Microsoft 365 Copilot</div>
+  </section>
+
+  <!-- Slide 1: Copilot Is Everywhere -->
+  <section class="slide title-card" data-title="Copilot Is Everywhere">
+    <div class="kicker">Section One</div>
+    <h1 class="hero">Copilot Is Everywhere</h1>
+    <div class="rule"></div>
+    <p class="subtitle">One assistant, grounded in your world — Teams, Outlook, Word, Excel, PowerPoint, and the browser — so the right help shows up wherever the work happens.</p>
+    <div class="product-pill"><span class="dot"></span> Microsoft 365 Copilot</div>
+  </section>
+
+  <!-- Slide 2: WorkIQ -->
+  <section class="slide title-card" data-title="WorkIQ">
+    <div class="kicker">Section Two</div>
+    <h1 class="hero">The Trust Layer Behind Every Answer</h1>
+    <div class="rule"></div>
+    <p class="subtitle">WorkIQ grounds Copilot in your real content — with enterprise security, permissioning, and compliance built in — so every answer is accurate, current, and safe to act on.</p>
+    <div class="product-pill"><span class="dot"></span> WorkIQ</div>
+  </section>
+
+  <!-- Slide 3: Demos agenda -->
+  <section class="slide content-slide" data-title="Demos Agenda">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">What's Next</div>
+      <h2>Five Demos, One CFO's Day</h2>
+      <div class="tag">From a personalized morning briefing to a boardroom-ready script</div>
+    </div>
+    <div class="agenda-grid">
+      <div class="agenda-item"><div class="num">01</div><div class="name">Make It His</div><div class="prod">Copilot + WorkIQ Personalization</div></div>
+      <div class="agenda-item"><div class="num">02</div><div class="name">Meeting to Meeting</div><div class="prod">Copilot Facilitator in Teams</div></div>
+      <div class="agenda-item"><div class="num">03</div><div class="name">The Earnings Binder</div><div class="prod">Copilot Notebooks &amp; Agents</div></div>
+      <div class="agenda-item"><div class="num">04</div><div class="name">Excel, Reimagined</div><div class="prod">Copilot in Excel &amp; Skills</div></div>
+      <div class="agenda-item"><div class="num">05</div><div class="name">Walk Into the Room</div><div class="prod">Copilot in PowerPoint</div></div>
+    </div>
+  </section>
+
+  <!-- Slide 4: Demo 1 -->
+  <section class="slide content-slide" data-title="Demo 1">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Demo 01</div>
+      <h2>Make It His: Personalizing Copilot</h2>
+      <div class="tag">Microsoft 365 Copilot &middot; WorkIQ &middot; Progressive disclosure by design</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card note-card">
+        <div class="label">Design Cue</div>
+        <p>"Initial view" is the operative phrase — progressive disclosure. Bullets up top, depth on demand: a one-pager first, with links to backup support (internal docs or external sources) available for anyone who wants to go deeper.</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Personalization Prompt</span></div>
+        <p class="prompt-text">"From now on, when you answer me, lead with a short bullet-point summary — like a one-pager. Don't front-load detail. If there's supporting evidence, whether an internal document or an external source, link it below the summary so I can drill in only if I choose to. I want the first view to always be scannable bullets, never a wall of text."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">CFO Research Prompt</span></div>
+        <p class="prompt-text">"Research how peer CFOs in specialty retail are talking about tariff pass-through and gross margin durability this quarter. Give me a one-page bullet summary of the themes and consensus view, then link out to the specific earnings calls, transcripts, or analyst notes so I can go deeper if I want to."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">WorkIQ Day-Prep Prompt</span></div>
+        <p class="prompt-text">"What's my most important meeting today? Pull the files that are relevant to it, and help me build a short action plan so I walk in prepared."</p>
+      </div>
+      <div class="prompt-card note-card">
+        <div class="label">Open Floor</div>
+        <p>Ask him: is there anything relevant on your calendar or in your inbox right now that you'd want to try prompting Copilot on?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5: Demo 2 -->
+  <section class="slide content-slide" data-title="Demo 2">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Demo 02</div>
+      <h2>Meeting to Meeting, Without Losing the Thread</h2>
+      <div class="tag">Copilot Facilitator in Teams</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Context Switching</span></div>
+        <p>Show how Copilot Facilitator keeps a running, structured record as a meeting happens — decisions, owners, and open items — so jumping from one meeting straight into the next doesn't mean losing the thread.</p>
+      </div>
+      <div class="prompt-card note-card">
+        <div class="label">To Explore</div>
+        <p>Uploading personal notes into the flow (TBD) — how Copilot can reconcile a leader's own handwritten or typed notes against the official meeting record.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6: Demo 3 -->
+  <section class="slide content-slide" data-title="Demo 3">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Demo 03</div>
+      <h2>The Earnings Binder, Solved</h2>
+      <div class="tag">Copilot Notebooks &middot; Copilot Agents &middot; Build the CFO script from source, not memory</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 1 — Map the Binder</span></div>
+        <p class="prompt-text">"This notebook contains the Q1 earnings binder. Before we start, give me a map of what is in it. For each file, tell me in one line what it contains and which section of the CFO script it would support: sales, gross margin, SG&amp;A, operating income, non-operating and tax, share count and EPS, inventory, liquidity, or guidance. Flag any file that does not map to a script section, and any file you cannot read. Do not summarise the contents yet."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 2 — Triage by Relevance</span></div>
+        <p class="prompt-text">"Here is what I need to focus on this quarter: the tariff impact and what it means for our guidance, how much of the gross margin expansion is durable, the international growth including the European distribution centre reclassification, and the share repurchase. Working only from the files in this notebook, identify every page, slide or tab relevant to those areas or to the standard script sections. Give me a table with: file name, page or tab, what it shows, and why it matters this quarter. Grade each one Core if the script cannot be written without it, Supporting if I would only need it if asked, or Skip. Do not include anything outside what I asked for, unless it is a material change versus last quarter, and if so include it and say why."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 3 — Build the Number Sheet</span></div>
+        <p class="prompt-text">"Build the number sheet for Q1. One row per figure the CFO script requires: net sales, comparable sales, gross margin dollars and rate, SG&amp;A dollars and rate, adjusted operating income, non-operating expense, adjusted tax, adjusted earnings per diluted share, shares repurchased, ending share count, ending inventory, cash and debt, and the guidance ranges for both the next quarter and the full year. For each row give the value, the prior-year comparison, the change expressed in dollars, percent or basis points as appropriate, the variance against guidance, and the exact file and page you took it from. If a figure appears in more than one file and the values disagree, show both and flag the discrepancy. If you cannot find a figure, write NOT FOUND. Do not estimate, interpolate or calculate a figure that is not stated in the binder."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 4 — Draft the Script</span></div>
+        <p class="prompt-text">"Draft the Q1 CFO script. Use the analysis we did above; do not calculate new ones. Follow the style guide exactly, including section order and relative length. Give particular weight to whatever you think is the theme of this notebook. Where a figure is missing from the number sheet, leave a clearly marked gap in square brackets rather than filling it. After the draft, list every number you used alongside the number sheet row it came from."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 5 — The Super Prompt</span></div>
+        <p class="prompt-text">"Here is what I need to focus on this quarter: the tariff impact and what it means for our guidance, how much of the gross margin expansion is durable, the international growth including the European distribution centre reclassification, and the share repurchase. Working only from the files in this notebook, identify every page, slide or tab relevant to those areas or to the standard script sections... [triage, then] build the number sheet for Q1 with values, prior-year comparisons, variances against guidance, and exact file/page citations, flagging any discrepancy and writing NOT FOUND where a figure is missing... then build the script based on everything we've discussed."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 7: Demo 4 -->
+  <section class="slide content-slide" data-title="Demo 4">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Demo 04</div>
+      <h2>Excel, Reimagined</h2>
+      <div class="tag">Copilot in Excel &middot; Copilot Skills &middot; From workbook to boardroom-ready report</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card note-card">
+        <div class="label">Part A — Ask the Workbook (choose any)</div>
+        <p class="prompt-text">Opening: "What are the five most important financial insights in this workbook for a CFO? Include the supporting figures and identify the worksheet used for each insight."<br><br>
+        Performance: "Compare Q1 2026 with Q1 2025 for net sales, gross margin rate, SG&amp;A rate, operating income, effective tax rate, and diluted EPS. Show dollar, percentage, and basis-point changes where appropriate."<br><br>
+        Driver: "Which lines contributed most to the year-over-year improvement in operating income? Separate revenue growth, margin improvement, and operating expense effects."<br><br>
+        Next Question: "Based only on this workbook, what three questions should the CFO ask the finance team before signing off on the quarter? Cite the data that prompted each question."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt — Build the Executive Report</span></div>
+        <p class="prompt-text">"Create a new worksheet named 'CFO Executive Summary.' Do not change the source worksheets. Build an executive report containing: (1) a KPI table for net sales, gross profit, gross margin rate, SG&amp;A, SG&amp;A rate, adjusted operating income, operating margin, effective tax rate, adjusted net income, diluted EPS, and weighted average diluted shares; (2) Q1 2026 actual, Q1 2025 actual, dollar change, percentage change, and basis-point change where applicable; (3) a waterfall or bridge showing the largest contributors to the year-over-year operating-income change; (4) a reported-to-adjusted EPS reconciliation; (5) five executive observations separating operational drivers, accounting adjustments, and items requiring management attention; (6) source worksheet and cell references for every KPI. Use formulas linked to the source data rather than typing static values."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt — Enhance With Supporting Files</span></div>
+        <p class="prompt-text">"Enhance the 'CFO Executive Summary' using the attached investor deck, financial update, cash-flow schedule, and tax briefing. Add sections for liquidity, guidance, tax-rate drivers, and management narrative. Reconcile figures across sources before using them. If sources disagree, identify the discrepancy instead of choosing a number silently. Clearly label actuals, adjusted results, forecasts, and management commentary."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Skill — cfo-earnings-review</span></div>
+        <p>A reusable Copilot Skill that runs this entire workflow on command: identifies the income statement and adjustment sheets, builds the KPI table, calculates dollar/percent/basis-point changes, reconciles reported to adjusted, and produces the "CFO Executive Summary" worksheet — with validation rules so blanks are never treated as zero, GAAP and adjusted figures are never mixed, and every conclusion carries a source citation or a clearly marked "NOT FOUND."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8: Demo 5 -->
+  <section class="slide content-slide" data-title="Demo 5">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Demo 05</div>
+      <h2>Walk Into the Room Ready</h2>
+      <div class="tag">Copilot in PowerPoint &middot; Critique the deck, then prep for the room</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 1 — Walk Me Into the Meeting</span></div>
+        <p class="prompt-text">"I am the CFO preparing to review this deck with the CEO, Audit Committee and finance leadership. Analyze the entire presentation and give me a concise executive briefing. Organize the response into: (1) the five things I must know before the meeting; (2) what changed versus last year, prior forecast, external guidance and Street consensus; (3) the underlying operating performance after separating tariff benefits, timing effects and other non-recurring items; (4) the three slides I should spend the most time on, and why; (5) the decisions or alignment I need from the room. For every conclusion, cite the supporting slide. Clearly distinguish actual results, forecasts, assumptions and management judgment. Tell me what the numbers mean."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 2 — Challenge the Plan</span></div>
+        <p class="prompt-text">"Now act as my most rigorous CFO chief of staff. Challenge the conclusions in the deck rather than accepting management's framing. Identify the 10 questions I should ask in the meeting, prioritizing quality and repeatability of earnings, core operating-income growth versus tariff/timing benefits, sales-to-operating-income flow-through, Q2 expense actions, SG&amp;A return on investment, inventory-to-sales risk, free-cash-flow conversion, tariff and sourcing sensitivities, guidance credibility, and capital allocation. For each question, give why I should ask it, the slide that triggered it, the answer management appears to be assuming, and the follow-up if the response is vague. Conclude with the three assumptions most likely to cause us to miss guidance."</p>
+      </div>
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Prompt 3 — Pressure Test the Investment Thesis</span></div>
+        <p class="prompt-text">"I am the CFO of a specialty apparel retailer and I will be meeting with investors over the next two weeks. Based on the financial results, operating trends, strategic initiatives, and management commentary in this deck, act as an activist investor, hedge fund manager, credit analyst, and sell-side analyst simultaneously. Identify the 10 toughest questions I am likely to receive on guidance credibility, margin expansion, cash flow, inventory, tariff strategy, capital allocation, and long-term growth. For each: why an investor would ask it, the data that triggers the concern, the strength of my current position, the weaknesses an investor may exploit, an evidence-based response, and a risk rating. Finally, summarize the three areas where investors are most likely to lose confidence, the three metrics I should proactively emphasize, and the single most important narrative I should reinforce."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 9: Researcher -->
+  <section class="slide content-slide" data-title="Researcher">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Bonus</div>
+      <h2>The Pre-Call Risk Brief</h2>
+      <div class="tag">Copilot Researcher &middot; Earnings binder + live public information</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Researcher Prompt</span></div>
+        <p class="prompt-text">"I'm preparing for our upcoming quarter-end close and earnings call. Use the earnings binder materials I've attached plus current public information. Build me a pre-call risk brief that does three things: (1) Where our narrative is most exposed — stress-test the claim that Q1 upside was real operating improvement, not a low-quality timing benefit, given that 145bps of our 245bps gross margin leverage was net tariff benefit; identify the three places our 'broad-based, execution-driven' claim is weakest against our own numbers. (2) What's changed since we guided — check current tariff rates and refund timing, ocean and air freight rates, and regional retail conditions against our guidance assumptions, and flag anything that would invalidate them. (3) The five hardest questions an analyst will ask, ranked by likelihood x difficulty, each with a two-sentence suggested answer and the specific schedule or page in my binder that backs it up. Format: bullet points only, one page maximum, supporting detail below the fold, and be explicit about where you're inferring versus citing."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 10: Closing -->
+  <section class="slide title-card" data-title="Closing">
+    <div class="kicker">Thank You</div>
+    <h1 class="hero">Copilot Is Ready When You Are</h1>
+    <div class="rule"></div>
+    <p class="subtitle">From the first bullet of the morning to the last slide of the boardroom deck — one assistant, grounded and secure, at every step of the decision.</p>
+    <div class="product-pill"><span class="dot"></span> Microsoft 365 Copilot &nbsp;&middot;&nbsp; WorkIQ</div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Previous">&#8592;</button>
+  <div class="counter" id="counter">01 / 11</div>
+  <button id="nextBtn" aria-label="Next">&#8594;</button>
+</div>
+<div class="dots" id="dots"></div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  const dotsWrap = document.getElementById('dots');
+  slides.forEach((s, i) => {
+    const b = document.createElement('button');
+    if (i === 0) b.classList.add('active');
+    b.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(b);
+  });
+  const dotEls = Array.from(dotsWrap.children);
+
+  function pad(n){ return n < 10 ? '0' + n : n; }
+
+  function render(){
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === current));
+    document.getElementById('counter').textContent = `${pad(current + 1)} / ${pad(total)}`;
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') goTo(current - 1);
+  });
+
+  render();
+</script>
+
+</body>
+</html>
