@@ -281,6 +281,14 @@
     font:14px/1.55 Consolas, "Courier New", monospace;
     font-style:normal !important;
   }
+  .day-prep-prompt{
+    margin:0;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    color:var(--blush);
+    font:14px/1.55 "Montserrat", sans-serif;
+    font-style:normal !important;
+  }
   .note-card{
     background:transparent;
     border:1px dashed var(--border-strong);
@@ -316,7 +324,6 @@
     box-shadow:0 14px 34px rgba(0,0,0,0.34);
     transition:transform .25s ease, border-color .25s ease;
   }
-  .agenda-item:nth-child(4){ grid-column:2 / span 2; }
   .agenda-item:hover{ transform:translateY(-4px); border-color:var(--border-strong); }
   .agenda-item .num{
     font-family:"Playfair Display", serif;
@@ -340,8 +347,7 @@
   }
   @media (max-width:800px){
     .agenda-grid{ grid-template-columns:1fr; max-width:560px; }
-    .agenda-item,
-    .agenda-item:nth-child(4){ grid-column:1; min-height:140px; }
+    .agenda-item{ grid-column:1; min-height:140px; }
   }
 
   /* Nav controls */
@@ -436,15 +442,16 @@
   <section class="slide content-slide agenda-slide" data-title="Demos Agenda">
     <div class="content-header">
       <div class="kicker" style="justify-content:center;">What's Next</div>
-      <h2>Five Demos, One CFO's Day</h2>
+      <h2>Six Demos, One CFO's Day</h2>
       <div class="tag">From a personalized morning briefing to a boardroom-ready script</div>
     </div>
     <div class="agenda-grid">
       <div class="agenda-item"><div class="num">01</div><div class="name">Personalizing Copilot</div><div class="prod">Copilot + WorkIQ Personalization</div></div>
-      <div class="agenda-item"><div class="num">02</div><div class="name">Meeting to Meeting</div><div class="prod">Copilot Facilitator + Cowork</div></div>
-      <div class="agenda-item"><div class="num">03</div><div class="name">The Earnings Binder</div><div class="prod">Copilot Notebooks &amp; Agents</div></div>
-      <div class="agenda-item"><div class="num">04</div><div class="name">Excel, Reimagined</div><div class="prod">Copilot in Excel &amp; Skills</div></div>
-      <div class="agenda-item"><div class="num">05</div><div class="name">Walk Into the Room</div><div class="prod">Copilot in PowerPoint</div></div>
+      <div class="agenda-item"><div class="num">02</div><div class="name">Prepare for Your Day</div><div class="prod">Copilot + WorkIQ Daily Brief</div></div>
+      <div class="agenda-item"><div class="num">03</div><div class="name">Meeting to Meeting</div><div class="prod">Copilot Facilitator + Cowork</div></div>
+      <div class="agenda-item"><div class="num">04</div><div class="name">The Earnings Binder</div><div class="prod">Copilot Notebooks &amp; Agents</div></div>
+      <div class="agenda-item"><div class="num">05</div><div class="name">Excel, Reimagined</div><div class="prod">Copilot in Excel &amp; Skills</div></div>
+      <div class="agenda-item"><div class="num">06</div><div class="name">Walk Into the Room</div><div class="prod">Copilot in PowerPoint</div></div>
     </div>
   </section>
 
@@ -481,10 +488,54 @@
     </div>
   </section>
 
+  <section class="slide content-slide" data-title="Prepare for Day">
+    <div class="content-header">
+      <div class="kicker" style="justify-content:center;">Demo 02</div>
+      <h2>Prepare for Your Day</h2>
+      <div class="tag">Microsoft 365 Copilot &middot; WorkIQ executive daily brief</div>
+    </div>
+    <div class="content-body">
+      <div class="prompt-card">
+        <div class="label"><span class="badge">Daily Preparation Prompt</span></div>
+        <pre class="prompt-text day-prep-prompt">Prepare me for my day using my calendar, emails, Teams chats, files, previous meetings, reports, and dashboards.
+
+Start with a concise, bullet-based view of:
+
+- The most important developments I need to know
+- Decisions or approvals requiring my attention
+- Financial risks, opportunities, or changes that may affect revenue, margin, cash flow, inventory, expenses, or strategic priorities
+- Commitments that are due or at risk
+- Messages and issues that need a response from me
+
+Review all of today's meetings and:
+
+- Rank them by business impact and urgency
+- Explain why each meeting matters
+- Flag scheduling conflicts, back-to-back meetings, and preparation gaps
+- Identify the single most important meeting
+
+For that meeting, create a focused preparation brief covering:
+
+- Objective and desired outcome
+- Relevant developments and financial context
+- Prior discussions, commitments, owners, and deadlines
+- Decisions I may need to make
+- Risks, disagreements, blockers, and missing information
+- Stakeholder priorities
+- Questions I should ask
+- Recommended talking points and position
+
+End with a prioritized action plan for before, during, and after today's meetings.
+
+Keep the initial view to one page of bullets. Link each key point to the supporting email, chat, meeting, file, report, or dashboard so I can go deeper as needed. Separate facts, risks, recommendations, and decisions. Do not speculate.</pre>
+      </div>
+    </div>
+  </section>
+
   <!-- Slide 5: Demo 2 -->
   <section class="slide content-slide" data-title="Demo 2">
     <div class="content-header">
-      <div class="kicker" style="justify-content:center;">Demo 02</div>
+      <div class="kicker" style="justify-content:center;">Demo 03</div>
       <h2>Meeting to Meeting, Without Losing the Thread</h2>
       <div class="tag">Copilot Facilitator in Teams &middot; Cowork</div>
     </div>
@@ -503,7 +554,7 @@
   <!-- Slide 6: Demo 3 -->
   <section class="slide content-slide" data-title="Demo 3">
     <div class="content-header">
-      <div class="kicker" style="justify-content:center;">Demo 03</div>
+      <div class="kicker" style="justify-content:center;">Demo 04</div>
       <h2>The Earnings Binder, Solved</h2>
       <div class="tag">Copilot Notebooks &middot; Copilot Agents &middot; Build the CFO script from source, not memory</div>
     </div>
@@ -530,7 +581,7 @@
   <!-- Slide 7: Demo 4 -->
   <section class="slide content-slide" data-title="Demo 4">
     <div class="content-header">
-      <div class="kicker" style="justify-content:center;">Demo 04</div>
+      <div class="kicker" style="justify-content:center;">Demo 05</div>
       <h2>Excel, Reimagined</h2>
       <div class="tag">Copilot in Excel &middot; Copilot Skills &middot; From workbook to boardroom-ready report</div>
     </div>
@@ -601,7 +652,7 @@ Analyze the active workbook as a finance professional preparing a CFO briefing.
   <!-- Slide 8: Demo 5 -->
   <section class="slide content-slide" data-title="Demo 5">
     <div class="content-header">
-      <div class="kicker" style="justify-content:center;">Demo 05</div>
+      <div class="kicker" style="justify-content:center;">Demo 06</div>
       <h2>Walk Into the Room Ready</h2>
       <div class="tag">Copilot in PowerPoint &middot; Critique the deck, then prep for the room</div>
     </div>
