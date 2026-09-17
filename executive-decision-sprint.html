@@ -587,7 +587,9 @@
 <div class="dots" id="dots"></div>
 
 <script>
-  const slides = Array.from(document.querySelectorAll('.slide'));
+  const removedSlides = new Set(['Cover', 'Copilot Is Everywhere', 'WorkIQ']);
+  const slides = Array.from(document.querySelectorAll('.slide'))
+    .filter((slide) => !removedSlides.has(slide.dataset.title));
   const agendaSlide = slides.find((slide) => slide.classList.contains('agenda-slide'));
   slides.splice(slides.indexOf(agendaSlide), 1);
   slides.unshift(agendaSlide);
@@ -606,7 +608,8 @@
   function pad(n){ return n < 10 ? '0' + n : n; }
 
   function render(){
-    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    document.querySelectorAll('.slide').forEach((slide) => slide.classList.remove('active'));
+    slides[current].classList.add('active');
     dotEls.forEach((d, i) => d.classList.toggle('active', i === current));
     document.getElementById('counter').textContent = `${pad(current + 1)} / ${pad(total)}`;
   }
