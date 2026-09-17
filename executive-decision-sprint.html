@@ -252,6 +252,26 @@
     font-style:italic;
     color:var(--blush);
   }
+  .personalization-prompt{ font-style:normal; }
+  .personalization-prompt p{
+    font-size:16px;
+    line-height:1.55;
+  }
+  .personalization-prompt ul{
+    margin:18px 0 0;
+    padding-left:22px;
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    column-gap:34px;
+    row-gap:9px;
+    color:var(--blush);
+    font-size:14px;
+    line-height:1.45;
+  }
+  .personalization-prompt li::marker{ color:var(--pink); }
+  @media (max-width:720px){
+    .personalization-prompt ul{ grid-template-columns:1fr; }
+  }
   .note-card{
     background:transparent;
     border:1px dashed var(--border-strong);
@@ -411,7 +431,7 @@
       <div class="tag">From a personalized morning briefing to a boardroom-ready script</div>
     </div>
     <div class="agenda-grid">
-      <div class="agenda-item"><div class="num">01</div><div class="name">Make It His</div><div class="prod">Copilot + WorkIQ Personalization</div></div>
+      <div class="agenda-item"><div class="num">01</div><div class="name">Personalizing Copilot</div><div class="prod">Copilot + WorkIQ Personalization</div></div>
       <div class="agenda-item"><div class="num">02</div><div class="name">Meeting to Meeting</div><div class="prod">Copilot Facilitator in Teams</div></div>
       <div class="agenda-item"><div class="num">03</div><div class="name">The Earnings Binder</div><div class="prod">Copilot Notebooks &amp; Agents</div></div>
       <div class="agenda-item"><div class="num">04</div><div class="name">Excel, Reimagined</div><div class="prod">Copilot in Excel &amp; Skills</div></div>
@@ -423,29 +443,31 @@
   <section class="slide content-slide" data-title="Demo 1">
     <div class="content-header">
       <div class="kicker" style="justify-content:center;">Demo 01</div>
-      <h2>Make It His: Personalizing Copilot</h2>
-      <div class="tag">Microsoft 365 Copilot &middot; WorkIQ &middot; Progressive disclosure by design</div>
+      <h2>Personalizing Copilot</h2>
+      <div class="tag">Microsoft 365 Copilot &middot; Executive personalization</div>
     </div>
     <div class="content-body">
-      <div class="prompt-card note-card">
-        <div class="label">Design Cue</div>
-        <p>"Initial view" is the operative phrase — progressive disclosure. Bullets up top, depth on demand: a one-pager first, with links to backup support (internal docs or external sources) available for anyone who wants to go deeper.</p>
-      </div>
       <div class="prompt-card">
         <div class="label"><span class="badge">Personalization Prompt</span></div>
-        <p class="prompt-text">"From now on, when you answer me, lead with a short bullet-point summary — like a one-pager. Don't front-load detail. If there's supporting evidence, whether an internal document or an external source, link it below the summary so I can drill in only if I choose to. I want the first view to always be scannable bullets, never a wall of text."</p>
-      </div>
-      <div class="prompt-card">
-        <div class="label"><span class="badge">CFO Research Prompt</span></div>
-        <p class="prompt-text">"Research how peer CFOs in specialty retail are talking about tariff pass-through and gross margin durability this quarter. Give me a one-page bullet summary of the themes and consensus view, then link out to the specific earnings calls, transcripts, or analyst notes so I can go deeper if I want to."</p>
-      </div>
-      <div class="prompt-card">
-        <div class="label"><span class="badge">WorkIQ Day-Prep Prompt</span></div>
-        <p class="prompt-text">"What's my most important meeting today? Pull the files that are relevant to it, and help me build a short action plan so I walk in prepared."</p>
-      </div>
-      <div class="prompt-card note-card">
-        <div class="label">Open Floor</div>
-        <p>Ask him: is there anything relevant on your calendar or in your inbox right now that you'd want to try prompting Copilot on?</p>
+        <div class="prompt-text personalization-prompt">
+          <p>I am the CFO of Victoria’s Secret. Tailor responses to support executive decisions involving revenue, profitability, gross margin, cash flow, inventory productivity, capital allocation, operating expenses, risk, and shareholder value.</p>
+          <ul>
+            <li>Get to the point early unless I ask for more detail.</li>
+            <li>Make the initial view concise, bullet-based, and easy to scan.</li>
+            <li>Use progressive disclosure. Start with the key answer, then provide optional supporting detail.</li>
+            <li>Link to relevant internal files, emails, meetings, chats, reports, and dashboards so I can investigate further.</li>
+            <li>Include credible external sources when they add useful market or competitor context.</li>
+            <li>Lead with the business implication, not a lengthy explanation.</li>
+            <li>Quantify financial impact when reliable data is available.</li>
+            <li>Clearly distinguish facts, risks, recommendations, assumptions, and decisions required.</li>
+            <li>Prioritize issues based on financial impact, urgency, and strategic importance.</li>
+            <li>Surface conflicting information, missing data, and unresolved decisions.</li>
+            <li>Do not speculate or present assumptions as facts.</li>
+            <li>For recommendations, explain the expected benefit, downside risk, and trade-offs.</li>
+            <li>Write in plain executive language suitable for leadership, board, and investor discussions.</li>
+            <li>Keep the initial response to approximately one page. Provide deeper analysis only when requested or through linked supporting materials.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
